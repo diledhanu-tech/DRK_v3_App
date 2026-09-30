@@ -17,18 +17,26 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Create basic project files
+    - name: Auto-Fix All Files
       run: |
-        mkdir -p app/src/main/res/layout
-        mkdir -p app/src/main/res/values
-        echo '<resources><string name="app_name">DRK v3</string></resources>' > app/src/main/res/values/strings.xml
-        echo '<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.drk.v3"><application android:allowBackup="true" android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true" android:theme="@style/Theme.AppCompat.Light.NoActionBar"><activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter></activity></application></manifest>' > app/src/main/AndroidManifest.xml
+        echo "pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }" > settings.gradle
+        echo "dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }" >> settings.gradle
+        echo "rootProject.name = 'DRK_v3_App'" >> settings.gradle
+        echo "include ':app'" >> settings.gradle
         
-    - name: Run Gradle Wrapper
-      run: gradle wrapper --gradle-version 8.1.1
+        echo "buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.1.0'; classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20' } }" > build.gradle
+        echo "allprojects { repositories { google(); mavenCentral() } }" >> build.gradle
+        
+        mkdir -p app
+        echo "plugins { id 'com.android.application'; id 'org.jetbrains.kotlin.android' }" > app/build.gradle
+        echo "android { namespace 'com.drk.v3'; compileSdk 34; defaultConfig { applicationId 'com.drk.v3'; minSdk 29; targetSdk 34; versionCode 1; versionName '1.0' } compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 } kotlinOptions { jvmTarget = '17' } }" >> app/build.gradle
+        echo "dependencies { implementation 'androidx.core:core-ktx:1.12.0'; implementation 'androidx.appcompat:appcompat:1.6.1'; implementation 'androidx.webkit:webkit:1.8.0' }" >> app/build.gradle
+        
+        mkdir -p app/src/main
+        echo '<?xml version="1.0" encoding="utf-8"?><manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.drk.v3"><application android:label="DRK v3"><activity android:name=".MainActivity" android:exported="true"><intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter></activity></application></manifest>' > app/src/main/AndroidManifest.xml
 
-    - name: Build with Gradle
-      run: ./gradlew assembleDebug
+    - name: Build APK directly with Gradle
+      run: gradle assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
