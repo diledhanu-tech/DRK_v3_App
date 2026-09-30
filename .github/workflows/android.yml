@@ -24,8 +24,22 @@ jobs:
         echo "rootProject.name = 'DRK_v3_App'" >> settings.gradle
         echo "include ':app'" >> settings.gradle
         
-        echo "buildscript { repositories { google(); mavenCentral() } dependencies { classpath 'com.android.tools.build:gradle:8.1.0'; classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20' } }" > build.gradle
-        echo "allprojects { repositories { google(); mavenCentral() } }" >> build.gradle
+        echo "buildscript {" > build.gradle
+        echo "    repositories {" >> build.gradle
+        echo "        google()" >> build.gradle
+        echo "        mavenCentral()" >> build.gradle
+        echo "    }" >> build.gradle
+        echo "    dependencies {" >> build.gradle
+        echo "        classpath 'com.android.tools.build:gradle:8.1.0'" >> build.gradle
+        echo "        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20'" >> build.gradle
+        echo "    }" >> build.gradle
+        echo "}" >> build.gradle
+        echo "allprojects {" >> build.gradle
+        echo "    repositories {" >> build.gradle
+        echo "        google()" >> build.gradle
+        echo "        mavenCentral()" >> build.gradle
+        echo "    }" >> build.gradle
+        echo "}" >> build.gradle
         
         mkdir -p app
         echo "plugins { id 'com.android.application'; id 'org.jetbrains.kotlin.android' }" > app/build.gradle
